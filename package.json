@@ -1,0 +1,26 @@
+{
+  "name": "nodejs",
+  "version": "1.0.0",
+  "description": "This is website that holds data of parking spaces for The Vale Group.",
+  "main": "app.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "vale",
+    "parking"
+  ],
+  "author": "Caner Sungur",
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "edit-json-file": "^1.6.2",
+    "express": "^4.17.1",
+    "multer": "^1.4.3",
+    "nedb": "^1.8.0",
+    "node-fetch": "^3.1.0",
+    "nodejs-file-downloader": "^4.8.1",
+    "zip-a-folder": "^1.1.0"
+  }
+}

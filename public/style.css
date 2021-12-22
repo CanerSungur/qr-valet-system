@@ -1,0 +1,88 @@
+body{
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      text-align: center;
+      background: #202020;
+      color: white;
+      font-family: 'Open Sans', sans-serif;
+		font-weight: 300;
+        max-height: 100vh;
+    }
+    h1{
+        color: #ffb821;
+        font-size: 48px;
+    }
+    h2{
+        margin: 5px;
+        font-size: 36px;
+    }
+    p{
+        margin: 5px;
+        font-size: 28px;
+    }
+    #btn{
+      /* position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%); */
+      background: #ffb821;
+      font-size: 20px;
+      color: white;
+      margin: 50px;
+      padding: 10px 30px;
+      cursor: pointer;
+    }
+    #popUpBox{
+      width: 500px;
+      overflow: hidden;
+      background: #ffb821;
+      box-shadow: 0 0 10px black;
+      border-radius: 10px;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 9999;
+      padding: 10px;
+      text-align: center;
+      display: none;
+    }
+    #check-mark{
+        color:green;
+    }
+    #popup-text{
+        color: black;
+    }
+    #closeModal{
+        display: none;
+    }
+    ::-moz-selection { /* Code for Firefox */
+        color: rgb(154, 84, 180);
+        background: #ffb821;
+      }
+      
+      ::selection {
+        color: rgb(154, 84, 180);
+        background: #ffb821;
+        text-shadow:none;
+      }
+      main{
+          max-height: 90vh;
+          width: 100%;
+          display:flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: flex-start;
+      }
+      nav{
+          max-height: 10vh;
+          width: 100%;
+          background: #fff;
+      }
+      .navbar-logo{
+        max-height: 8vh;
+        width: auto;
+        padding: 0.5em;
+    }
+    

@@ -1,0 +1,7 @@
+{
+    "name": "Nokta AVM",
+    "section": "Üst Kısım",
+    "park": 10,
+    "status": "empty",
+    "carIsCalled": "false"
+}

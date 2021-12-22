@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+
+    <link rel="stylesheet" type="text/css" href="../../../style.css" />
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/p5@1.4.0/lib/p5.js"></script> -->
+    <script src="https://kit.fontawesome.com/a71707a89a.js" crossorigin="anonymous"></script>
+
+    <link rel="icon" href="../../../images/new/vale-logo-02.png">
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700' rel='stylesheet' type='text/css'>
+
+    <title>The Vale Group | Nokta-Park 7</title>
+</head>
+
+<body>
+    <main>
+        <nav>
+            <img class="navbar-logo" src="../../../images/new/vale-logo-01.png" />
+        </nav>
+        <h1>NOKTA AVM</h1>
+        <h2>Otopark - 7</h2>
+        <p>Aracınızı Getirelim Mi?</p>
+
+        <!-- Modal Trigger-->
+        <!-- <button id="btn-fetch-car">GETİR</button> -->
+
+        <!-- Modal Section -->
+        <div id="popUpOverlay"></div>
+        <div id="popUpBox">
+            <div id="box">
+                <i id="check-mark" class="fas fa-check-circle fa-5x"></i>
+                <h1 id="popup-text">Aracınızı Getiriyoruz!</h1>
+                <div id="closeModal"></div>
+            </div>
+        </div>
+        <button onclick="Alert.render('You look very pretty today.')" id="btn">GETİR</button>
+    </main>
+
+    <script>
+        var Alert = new CustomAlert();
+        function CustomAlert() {
+            this.render = function () {
+                //Show Modal
+                let popUpBox = document.getElementById('popUpBox');
+                popUpBox.style.display = "block";
+                //Close Modal
+                document.getElementById('closeModal').innerHTML = '<button onclick="Alert.ok()">&times;</button>';
+                // setTimeout(function () { location.href = "http://localhost:3000/" }, 3000);
+                // setTimeout(redirect(), 5000);
+                setTimeout(function () { window.location.replace("https://thevalegroup.co/") }, 3000);
+            }
+            this.ok = function () {
+                document.getElementById('popUpBox').style.display = "none";
+                document.getElementById('popUpOverlay').style.display = "none";
+            }
+        }
+
+        function redirect() {
+            window.location.replace("https://thevalegroup.co/");
+        }
+    </script>
+
+    <script src="8f14e45fceea167a5a36dedd4bea2543.js"></script>
+</body>
+<!-- <script>
+    function setup() {
+        noCanvas();
+        const video = createCapture(VIDEO);
+        video.size(320, 240);
+    }
+</script> -->
+
+</html>
