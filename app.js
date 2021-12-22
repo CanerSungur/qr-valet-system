@@ -1,17 +1,16 @@
 import express, { request, response } from 'express';
 import DataStore from 'nedb';
-import fetch from 'node-fetch';
 import editJsonFile from 'edit-json-file';
-import multer from 'multer';
 import bodyParser from 'body-parser';
 import fs from 'fs';
 import { zip } from 'zip-a-folder';
-const upload = multer({ dest: 'uploads/' })
 
 const app = express(); // create the app
 const port = process.env.PORT || 3000
 app.listen(port, () => console.log(`listening server at ${port}`)); // listen to the server which we've created
 app.use(express.static('public')); // make a folder called 'public' is public
+
+// We expand sent data size here
 app.use(bodyParser.json({
     limit: '50mb'
 }));
@@ -23,9 +22,18 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(express.json({ limit: '1mb' }));
 
-// ##########################
-// ##### FILE DOWNLOAD ######
-// ##########################
+// Init main database
+const database = new DataStore('data/database.db');
+database.loadDatabase();
+
+// Car count related db and variables
+const noktaUstCarCountDatabase = new DataStore('data/Nokta/Ust/carCount.db');
+noktaUstCarCountDatabase.loadDatabase();
+let noktaDailyTakenCarCount = 0;
+let noktaDailyGivenCarCount = 0;
+
+//#region File Download
+
 // We zip images first, send images.zip and db text files. Then delete them all.
 
 let zipIsSuccessfull = false;
@@ -80,23 +88,10 @@ app.get('/deletefiles', async function (req, res) {
     }
 });
 
-// ##########################
-// ##########################
-// ##########################
+//#endregion
 
-const database = new DataStore('data/database.db');
-database.loadDatabase();
-const noktaUstCarCountDatabase = new DataStore('data/Nokta/Ust/carCount.db');
-noktaUstCarCountDatabase.loadDatabase();
+//#region APIs
 
-let noktaDailyTakenCarCount = 0;
-let noktaDailyGivenCarCount = 0;
-
-let currentName, currentSection, currentIndex, currentImg, currentDateTime;
-
-// ###############################################
-// ########## KULLANILAN APILAR ##################
-// ###############################################
 app.post('/arabaAlmak', async (request, response) => {
     const data = request.body;
     // const timestamp = Date.now();
@@ -188,8 +183,10 @@ app.post('/arabaCagrisi', async (request, response) => {
 
     response.json(data);
 });
-// ###############################################
-// ###############################################
+
+//#endregion
+
+//#region Data Path Variables
 
 let noktaJSON = [
     '0',
@@ -204,6 +201,10 @@ let noktaJSON = [
     'https://www.thevalegroup.co/services/nokta/9/45c48cce2e2d7fbdea1afc51c7c6ad26.json',//9
     'https://www.thevalegroup.co/services/nokta/10/d3d9446802a44259755d38e6d163e820.json',//10
 ]
+
+//#endregion
+
+//#region Functions
 
 function checkFolderPathExistance(folderPath) {
     if (!fs.existsSync(folderPath)) {
@@ -241,188 +242,4 @@ function updateGivenCarCount(count) {
     file.save();
 }
 
-// ###############################################
-// ########## ESKI API VE FONKSIYONLAR ###########
-// ###############################################
-function changeData(jsonPath) {
-    let file = editJsonFile(jsonPath);
-    file.set("carIsCalled", "true");
-    file.save();
-    console.log(file.get());
-
-    //setTimeout(function () { changeDataToDefault(jsonPath) }, 15000);
-}
-
-function changeDataToDefault(jsonPath) {
-    let file = editJsonFile(jsonPath);
-    file.set("carIsCalled", "false");
-    file.save();
-    console.log(file.get());
-}
-
-app.get('/api', async (request, response) => {
-
-    // if (request.name == "Nokta AVM") {
-    //     changeData(noktaJson[request.index])
-    //     console.log(request.name);
-    //     console.log(request.index);
-    //     response.json(`${request.name} park-${request.index} araciniz yolda.`);
-    // }
-
-    console.log('Call car button is pressed.');
-    console.log('Changing parking space JSON...');
-    //console.log(request);
-
-    changeDataToDefault(noktaJSON[1]);
-    response.json({
-        status: 'Car Is Called!',
-    });
-
-    /*
-    database.find({}, (err, data) => {
-        if (err) {
-            response.end();
-            return;
-        }
-        response.json(data);
-        //console.log(`${data.name}'de park ${data.index} araba çağırma durumu: ${data.carIsCalled}`);
-    });
-
-    */
-});
-
-// this is server code. There has to be client code to be able to get data from client
-app.post('/api', (request, response) => {
-    const data = { "message": `${request.name} park-${request.index} araciniz yolda.!!` };
-    //const timestamp = Date.now();
-    //data.timestamp = timestamp;
-    database.insert(data);
-    response.json(data);
-
-    /*
-    response.json({ // this is the response to the client after getting data. Do whatever you want with the data you've got.
-        status: 'success',
-        timestamp: timestamp,
-        latitude: data.lan,
-        longitude: data.lon
-    });
-    */
-});
-
-
-
-// we get parameters as one with comma in between. We create a path for it and split them.
-app.get('/car/:nameindeximage', async (request, response) => {
-    const nameindeximage = request.params.nameindeximage.split(',');
-    currentName = nameindeximage[0];
-    currentIndex = nameindeximage[1];
-    currentImg = nameindeximage[2]
-
-    if (currentName == "Nokta") {
-        changeData(noktaJSON[currentIndex])
-    } else {
-        console.log('Böyle bir AVM yok!')
-    }
-
-    //console.log(nameindex);
-    //console.log(currentName);
-    //console.log(currentIndex);
-
-    //console.log(`name: ${currentName}`);
-    //console.log(`name: ${currentIndex}`);
-    const timestamp = Date.now();
-    //data.timestamp = timestamp;
-
-    const data = {
-        "type": 'ÇAĞRI',
-        "AVM": currentName,
-        "BÖLÜM": 'ANA BÖLÜM',
-        "PARK NO": currentIndex,
-        "TARİH": timestamp,
-        "RESİM": currentImg
-    };
-    database.insert(data);
-
-    response.json(data);
-});
-
-// This works with unit right now
-app.post('/callCar/:nameindex', async (request, response) => {
-    const nameindex = request.params.nameindex.split(',');
-    currentName = nameindex[0];
-    currentIndex = nameindex[1];
-
-    if (currentName == "Nokta") {
-        changeDataToDefault(noktaJSON[currentIndex])
-    } else {
-        console.log('Böyle bir AVM yok!')
-    }
-
-    // const data = { "type": 'CALL', "message": `${currentName} park-${currentIndex} araciniz yolda.` };
-    const timestamp = Date.now();
-    // data.timestamp = timestamp;
-
-    const data = {
-        "type": 'VERMEK',
-        "AVM": currentName,
-        "BÖLÜM": 'ANA BÖLÜM',
-        "PARK NO": 1,
-        "PERSONEL": 'Caner SUNGUR',
-        "TARİH": timestamp
-    };
-    database.insert(data);
-
-    response.json({
-        message: 'Car is called.'
-    });
-
-    //console.log(nameindex);
-    //console.log(currentName);
-    //console.log(currentIndex);
-
-    //console.log(`name: ${currentName}`);
-    //console.log(`name: ${currentIndex}`);
-});
-
-app.get('/callCar', async (request, response) => {
-
-    const _response = await fetch(request);
-    const json = await _response.json();
-    console.log(json);
-
-    response.json({
-        message: 'Car is called.'
-    });
-
-    //console.log(nameindex);
-    //console.log(currentName);
-    //console.log(currentIndex);
-
-    //console.log(`name: ${currentName}`);
-    //console.log(`name: ${currentIndex}`);
-});
-
-// This doesn't work now.
-app.post('/car/:nameindex', (request, response) => {
-
-    const data = { "message": `${currentName}: Park-${currentIndex}'deki araç çağırıldı'.##` };
-    //const timestamp = Date.now();
-    //data.timestamp = timestamp;
-    database.insert(data);
-    response.json(data);
-
-    console.log('response worked!');
-
-    /*
-    response.json({ // this is the response to the client after getting data. Do whatever you want with the data you've got.
-        status: 'success',
-        timestamp: timestamp,
-        latitude: data.lan,
-        longitude: data.lon
-    });
-    */
-});
-
-// ###############################################
-// ###############################################
-// ###############################################
+//#endregion
