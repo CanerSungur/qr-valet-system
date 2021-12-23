@@ -206,7 +206,7 @@ let noktaUstJSON = [
 
 //#region Functions
 
-let url_start = 'https://qr-valet-system.herokuapp.com/services/';
+let url_start = 'https://the-vale-group.herokuapp.com/services/';
 function checkFolderPathExistance(folderPath) {
     if (!fs.existsSync(folderPath)) {
         fs.mkdirSync(folderPath, { recursive: true });
