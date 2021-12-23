@@ -32,9 +32,32 @@ body{
       margin: 50px;
       padding: 10px 30px;
       cursor: pointer;
+      /* animation-name: buttonBounce;
+      animation-duration: 2s;
+      animation-timing-function: linear;
+      animation-delay: 2s;
+      animation-iteration-count: infinite;
+      animation-direction: normal; */
+    }
+    @keyframes buttonBounce {
+        from {
+          transform: scale(1);
+        }
+      
+        75% {
+            transform: scale(1.15);
+        }
+      
+        to {
+            transform: scale(1);
+        }
+      }
+    #popUpOverlay{
+        max-height: 10vh;
+      max-width: 20vw;
     }
     #popUpBox{
-      width: 500px;
+        width: auto;
       overflow: hidden;
       background: #ffb821;
       box-shadow: 0 0 10px black;
