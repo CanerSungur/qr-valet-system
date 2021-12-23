@@ -6,8 +6,9 @@ import fs from 'fs';
 import { zip } from 'zip-a-folder';
 
 const app = express(); // create the app
-const port = process.env.PORT || 3000
+const port = process.env.PORT || 3000;
 app.listen(port, () => console.log(`listening server at ${port}`)); // listen to the server which we've created
+// app.listen(3000, () => console.log('listening at 3000')); // listen to the server which we've created
 app.use(express.static('public')); // make a folder called 'public' is public
 
 // We expand sent data size here
@@ -29,8 +30,6 @@ database.loadDatabase();
 // Car count related db and variables
 const noktaUstCarCountDatabase = new DataStore('data/Nokta/Ust/carCount.db');
 noktaUstCarCountDatabase.loadDatabase();
-let noktaDailyTakenCarCount = 0;
-let noktaDailyGivenCarCount = 0;
 
 //#region File Download
 
@@ -133,10 +132,10 @@ app.post('/arabaAlmak', async (request, response) => {
         "RESİM": savedImagePath
     });
 
-    if (data.name == "Nokta") {
+    if (data.name == "Nokta" && data.section == "Ust") {
         changeParkSpaceStatus(noktaUstJSON[data.index], "full");
-        const count = noktaDailyTakenCarCount + 1;
-        updateTakenCarCount(count);
+
+        updateTakenCarCount('public/services/nokta-ust/noktaUstCarCount.json');
     } else {
         console.log("Böyle bir AVM yok!");
     }
@@ -162,11 +161,11 @@ app.post('/arabaVermek', async (request, response) => {
         "TARİH": data.datetime,
     });
 
-    if (data.name == "Nokta") {
+    if (data.name == "Nokta" && data.section == "Ust") {
         changeCallingCarStatus(noktaUstJSON[data.index], "false");
         changeParkSpaceStatus(noktaUstJSON[data.index], "empty");
-        const count = noktaDailyGivenCarCount + 1;
-        updateGivenCarCount(count);
+
+        updateGivenCarCount('public/services/nokta-ust/noktaUstCarCount.json');
     } else {
         console.log("Böyle bir AVM yok!");
     }
@@ -190,16 +189,16 @@ app.post('/arabaCagrisi', async (request, response) => {
 
 let noktaUstJSON = [
     '0',
-    'https://the-vale-group.herokuapp.com/services/nokta-ust/1/c4ca4238a0b923820dcc509a6f75849b.json',//1
-    'https://the-vale-group.herokuapp.com/services/nokta-ust/2/c81e728d9d4c2f636f067f89cc14862c.json',//2
-    'https://the-vale-group.herokuapp.com/services/nokta-ust/3/eccbc87e4b5ce2fe28308fd9f2a7baf3.json',//3
-    'https://the-vale-group.herokuapp.com/services/nokta-ust/4/a87ff679a2f3e71d9181a67b7542122c.json',//4
-    'https://the-vale-group.herokuapp.com/services/nokta-ust/5/e4da3b7fbbce2345d7772b0674a318d5.json',//5
-    'https://the-vale-group.herokuapp.com/services/nokta-ust/6/1679091c5a880faf6fb5e6087eb1b2dc.json',//6
-    'https://the-vale-group.herokuapp.com/services/nokta-ust/7/8f14e45fceea167a5a36dedd4bea2543.json',//7
-    'https://the-vale-group.herokuapp.com/services/nokta-ust/8/c9f0f895fb98ab9159f51fd0297e236d.json',//8
-    'https://the-vale-group.herokuapp.com/services/nokta-ust/9/45c48cce2e2d7fbdea1afc51c7c6ad26.json',//9
-    'https://the-vale-group.herokuapp.com/services/nokta-ust/10/d3d9446802a44259755d38e6d163e820.json',//10
+    'public/services/nokta-ust/1/c4ca4238a0b923820dcc509a6f75849b.json',//1
+    'public/services/nokta-ust/2/c81e728d9d4c2f636f067f89cc14862c.json',//2
+    'public/services/nokta-ust/3/eccbc87e4b5ce2fe28308fd9f2a7baf3.json',//3
+    'public/services/nokta-ust/4/a87ff679a2f3e71d9181a67b7542122c.json',//4
+    'public/services/nokta-ust/5/e4da3b7fbbce2345d7772b0674a318d5.json',//5
+    'public/services/nokta-ust/6/1679091c5a880faf6fb5e6087eb1b2dc.json',//6
+    'public/services/nokta-ust/7/8f14e45fceea167a5a36dedd4bea2543.json',//7
+    'public/services/nokta-ust/8/c9f0f895fb98ab9159f51fd0297e236d.json',//8
+    'public/services/nokta-ust/9/45c48cce2e2d7fbdea1afc51c7c6ad26.json',//9
+    'public/services/nokta-ust/10/d3d9446802a44259755d38e6d163e820.json',//10
 ]
 
 //#endregion
@@ -231,15 +230,19 @@ function changeParkSpaceStatus(jsonPath, status) {
     file.save();
 }
 
-function updateTakenCarCount(count) {
-    let file = editJsonFile('https://the-vale-group.herokuapp.com/services/nokta-ust/noktaUstCarCount.json');
-    file.set("taken_car_count", count);
+function updateTakenCarCount(path) {
+    let file = editJsonFile(path);
+    let takenCarCount = file.get('taken_car_count');
+    let number = parseInt(takenCarCount);
+    file.set("taken_car_count", number + 1);
     file.save();
 }
 
-function updateGivenCarCount(count) {
-    let file = editJsonFile('https://the-vale-group.herokuapp.com/services/nokta-ust/noktaUstCarCount.json');
-    file.set("given_car_count", count);
+function updateGivenCarCount(path) {
+    let file = editJsonFile(path);
+    let givenCarCount = file.get('given_car_count');
+    let number = parseInt(givenCarCount)
+    file.set("given_car_count", number + 1);
     file.save();
 }
 

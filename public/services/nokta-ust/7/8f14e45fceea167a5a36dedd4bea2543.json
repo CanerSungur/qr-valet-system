@@ -1,7 +1,7 @@
 {
-    "name": "Nokta AVM",
-    "section": "Üst Kısım",
-    "park": 7,
-    "status": "empty",
-    "carIsCalled": "false"
+  "name": "Nokta AVM",
+  "section": "Üst Kısım",
+  "park": 7,
+  "status": "empty",
+  "carIsCalled": "false"
 }
