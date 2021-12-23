@@ -133,7 +133,7 @@ app.post('/arabaAlmak', async (request, response) => {
         "RESİM": savedImagePath
     });
 
-    if (data.name == "Nokta" && data.section == "Ust") {
+    if (data.name == "Nokta") {
         changeParkSpaceStatus(noktaUstJSON[data.index], "full");
         const count = noktaDailyTakenCarCount + 1;
         updateTakenCarCount(count);
@@ -162,7 +162,7 @@ app.post('/arabaVermek', async (request, response) => {
         "TARİH": data.datetime,
     });
 
-    if (data.name == "Nokta" && data.section == "Ust") {
+    if (data.name == "Nokta") {
         changeCallingCarStatus(noktaUstJSON[data.index], "false");
         changeParkSpaceStatus(noktaUstJSON[data.index], "empty");
         const count = noktaDailyGivenCarCount + 1;
