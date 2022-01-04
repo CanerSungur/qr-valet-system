@@ -1,5 +1,5 @@
 $(function () {
-    const btn_fetch_car = document.getElementById('btn-fetch-car');
+    const btn_fetch_car = document.getElementById('btn');
     btn_fetch_car.addEventListener('click', sendData2);
 
     let name = 'Nokta';

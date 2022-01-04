@@ -3,6 +3,14 @@ $(function () {
     download_data.addEventListener('click', downloadData);
     const delete_data = document.getElementById('delete-data');
     delete_data.addEventListener('click', deleteData);
+    const save_car_count = document.getElementById('save-car-count');
+    save_car_count.addEventListener('click', saveCarCount);
+
+    async function saveCarCount() {
+        const response = await fetch('/savecarcount');
+        const json = await response.json();
+        console.log(json);
+    }
 
     async function deleteData() {
         const response = await fetch('/deletefiles');

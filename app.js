@@ -87,6 +87,24 @@ app.get('/deletefiles', async function (req, res) {
     }
 });
 
+app.get('/savecarcount', async function (req, res) {
+    const time = Date.now();
+    const takenCarCount = getTakenCarCount('public/services/nokta-ust/noktaUstCarCount.json');
+    const givenCarCount = getGivenCarCount('public/services/nokta-ust/noktaUstCarCount.json');
+
+    noktaUstCarCountDatabase.insert({
+        "TARIH": time,
+        "ALINAN ARABA": takenCarCount,
+        "VERILEN ARABA": givenCarCount
+    });
+
+    res.json({
+        "TARIH": time,
+        "ALINAN ARABA": takenCarCount,
+        "VERILEN ARABA": givenCarCount
+    })
+});
+
 //#endregion
 
 //#region APIs
@@ -238,12 +256,24 @@ function updateTakenCarCount(path) {
     file.save();
 }
 
+function getTakenCarCount(path) {
+    let file = editJsonFile(path);
+    let takenCarCount = file.get('taken_car_count');
+    return takenCarCount;
+}
+
 function updateGivenCarCount(path) {
     let file = editJsonFile(path);
     let givenCarCount = file.get('given_car_count');
     let number = parseInt(givenCarCount)
     file.set("given_car_count", number + 1);
     file.save();
+}
+
+function getGivenCarCount(path) {
+    let file = editJsonFile(path);
+    let givenCarCount = file.get('given_car_count');
+    return givenCarCount;
 }
 
 //#endregion
