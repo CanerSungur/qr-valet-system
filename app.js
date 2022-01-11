@@ -88,18 +88,23 @@ app.get('/deletefiles', async function (req, res) {
 });
 
 app.get('/savecarcount', async function (req, res) {
-    const time = Date.now();
+    const timestamp = Date.now();
     const takenCarCount = getTakenCarCount('public/services/nokta-ust/noktaUstCarCount.json');
     const givenCarCount = getGivenCarCount('public/services/nokta-ust/noktaUstCarCount.json');
 
+    var date = new Date(timestamp).toLocaleDateString("tr-TR");
+    var time = new Date(timestamp).toLocaleTimeString("tr-TR");
+    var datetime = `${date}-${time}`;
+    console.log(datetime)
+
     noktaUstCarCountDatabase.insert({
-        "TARIH": time,
+        "TARIH": datetime,
         "ALINAN ARABA": takenCarCount,
         "VERILEN ARABA": givenCarCount
     });
 
     res.json({
-        "TARIH": time,
+        "TARIH": datetime,
         "ALINAN ARABA": takenCarCount,
         "VERILEN ARABA": givenCarCount
     })
